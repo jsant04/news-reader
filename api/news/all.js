@@ -4,13 +4,7 @@ export default async function handler(req, res) {
     const { page = 1, search, categories } = req.query;
     const API_KEY = process.env.NEWSAPI_KEY;
 
-    if (!API_KEY) {
-      return res.status(500).json({
-        error: 'NEWSAPI_KEY not configured on server',
-      });
-    }
-
-    // Set CORS headers
+    // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -18,6 +12,17 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') {
       return res.status(200).end();
     }
+
+    if (!API_KEY) {
+      console.error('ERROR: NEWSAPI_KEY environment variable not set');
+      return res.status(500).json({
+        error: 'NEWSAPI_KEY not configured on server',
+        debug: 'Environment variable is missing'
+      });
+    }
+
+    console.log('API_KEY is set, starting news fetch...');
+    console.log(`Query params - page: ${page}, search: ${search}, categories: ${categories}`);
 
     // Philippine news sources to filter by
     const PHILIPPINE_SOURCES = [
@@ -138,6 +143,11 @@ export default async function handler(req, res) {
       console.log(
         `Filtered ${originalTotal} articles to ${filteredArticles.length} from Philippine sources`
       );
+
+      if (filteredArticles.length === 0) {
+        console.warn('WARNING: No articles matched Philippine sources filter');
+        console.log('Available sources:', data.articles.map(a => a.source.name).slice(0, 5));
+      }
     }
 
     return res.status(200).json(data);
