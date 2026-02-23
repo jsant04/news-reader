@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "web/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "web/dist"
+      }
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "web/dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "web/dist/index.html"
+    }
+  ],
+  "env": {
+    "NEWSAPI_KEY": "@NEWSAPI_KEY"
+  }
+}
