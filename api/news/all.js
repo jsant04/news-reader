@@ -24,19 +24,6 @@ export default async function handler(req, res) {
     console.log('API_KEY is set, starting news fetch...');
     console.log(`Query params - page: ${page}, search: ${search}, categories: ${categories}`);
 
-    // Philippine news sources to filter by
-    const PHILIPPINE_SOURCES = [
-      'inquirer',
-      'gmanetwork',
-      'philstar',
-      'abs-cbn',
-      'rappler',
-      'cnn-philippines',
-      'bbc',
-      'reuters',
-      'ap',
-    ];
-
     // Try to fetch news with date range - start with 7 days ago
     let fromDate = new Date();
     fromDate.setDate(fromDate.getDate() - 7);
@@ -126,28 +113,12 @@ export default async function handler(req, res) {
 
     // Filter articles to only include Philippine news sources
     if (data.articles) {
-      const filteredArticles = data.articles.filter((article) => {
-        const sourceId = article.source.id?.toLowerCase() || '';
-        const sourceName = article.source.name?.toLowerCase() || '';
-
-        return PHILIPPINE_SOURCES.some(
-          (source) => sourceId.includes(source) || sourceName.includes(source)
-        );
-      });
-
-      // Update totalResults to reflect filtered count
-      const originalTotal = data.totalResults;
-      data.articles = filteredArticles;
-      data.totalResults = filteredArticles.length;
-
+      // Note: Removed Philippine source filter to show all available articles
+      // Users can now see articles from any credible news source
+      
       console.log(
-        `Filtered ${originalTotal} articles to ${filteredArticles.length} from Philippine sources`
+        `Retrieved ${data.articles.length} articles from NewsAPI`
       );
-
-      if (filteredArticles.length === 0) {
-        console.warn('WARNING: No articles matched Philippine sources filter');
-        console.log('Available sources:', data.articles.map(a => a.source.name).slice(0, 5));
-      }
     }
 
     return res.status(200).json(data);
