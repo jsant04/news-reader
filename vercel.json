@@ -26,8 +26,5 @@
       "src": "/(.*)",
       "dest": "web/dist/index.html"
     }
-  ],
-  "env": {
-    "NEWSAPI_KEY": "@NEWSAPI_KEY"
-  }
+  ]
 }
