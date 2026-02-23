@@ -1,18 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "web/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "web/dist"
-      }
-    },
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    }
-  ],
+  "buildCommand": "cd web && npm run build",
+  "outputDirectory": "web/dist",
+  "installCommand": "npm install && cd server && npm install && cd ../web && npm install",
   "routes": [
     {
       "src": "/api/(.*)",
